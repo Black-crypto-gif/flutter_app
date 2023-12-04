@@ -5,7 +5,6 @@ import 'Channels/channel3.dart';
 import 'Channels/channel4.dart';
 import 'Channels/channel5.dart';
 import 'Others/About.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
   runApp(MyApp());
@@ -37,172 +36,130 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Stream App'),
+        title: Text('اذاعة توحيد'),
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 20),
-            _buildRadioChannelsSection(),
+
+            // Featured Channels
+            Text(
+              'Featured Channels',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 20.0, // Adjust the spacing between columns
+              runSpacing: 20.0, // Adjust the spacing between rows
+              children: [
+                _buildPaddedChannelButton(
+                    'Channel 1', '/channel1', Icons.music_note),
+                _buildPaddedChannelButton(
+                    'Channel 2', '/channel2', Icons.music_note),
+                _buildPaddedChannelButton(
+                    'Channel 3', '/channel3', Icons.music_note),
+                _buildPaddedChannelButton(
+                    'Channel 4', '/channel4', Icons.music_note),
+                _buildPaddedChannelButton(
+                    'Radio Page', '/channel5', Icons.radio),
+              ],
+            ),
+
             SizedBox(height: 20),
-            _buildCategoriesSection(),
+
+            // App Description
+            Text(
+              'Discover the world of music with Stream App. Explore diverse channels and enjoy a personalized audio experience.',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
             SizedBox(height: 20),
-            _buildDynamicContentSection(),
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            // Drawer items for each channel and about page
+            ListTile(
+              title: Text('قناة البث المباشر'),
+              onTap: () {
+                Navigator.pushNamed(context, '/channel1');
+              },
+            ),
+            ListTile(
+              title: Text('Channel 2'),
+              onTap: () {
+                Navigator.pushNamed(context, '/channel2');
+              },
+            ),
+            ListTile(
+              title: Text('Channel 3'),
+              onTap: () {
+                Navigator.pushNamed(context, '/channel3');
+              },
+            ),
+            ListTile(
+              title: Text('Channel 4'),
+              onTap: () {
+                Navigator.pushNamed(context, '/channel4');
+              },
+            ),
+            ListTile(
+              title: Text('محطات الراديو'),
+              onTap: () {
+                Navigator.pushNamed(context, '/channel5');
+              },
+            ),
+            ListTile(
+              title: Text('About this App'),
+              onTap: () {
+                Navigator.pushNamed(context, '/about');
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRadioChannelsSection() {
+  Widget _buildPaddedChannelButton(String label, String route, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(
-              'Our Radio Station',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 20.0, // Adjust the spacing as needed
-            children: [
-              CategoryButton('Channel 1', '/channel1', Icons.music_note),
-              CategoryButton('Channel 2', '/channel2', Icons.music_note),
-              CategoryButton('Channel 3', '/channel3', Icons.music_note),
-              CategoryButton('Channel 4', '/channel4', Icons.music_note),
-              CategoryButton('Radio Page', '/channel5', Icons.radio),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCategoriesSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(
-              'Categories',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: 6,
-            itemBuilder: (context, index) {
-              return CategoryCard('Category $index', '/category$index');
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDynamicContentSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(
-              'Dynamic Content',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Card(
-            elevation: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Latest Announcement: Welcome to Stream App!',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.all(8.0), // Adjust the padding as needed
+      child: ChannelButton(label, route, icon),
     );
   }
 }
 
-class CategoryButton extends StatelessWidget {
+class ChannelButton extends StatelessWidget {
   final String label;
   final String route;
   final IconData icon;
 
-  CategoryButton(this.label, this.route, this.icon);
+  ChannelButton(this.label, this.route, this.icon);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      child: InkWell(
-        onTap: () {
-          Navigator.pushNamed(context, route);
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 40,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              SizedBox(height: 8),
-              Text(
-                label,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+    return ElevatedButton.icon(
+      onPressed: () {
+        Navigator.pushNamed(context, route);
+      },
+      style: ElevatedButton.styleFrom(
+        primary: Colors.black,
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
       ),
-    );
-  }
-}
-
-class CategoryCard extends StatelessWidget {
-  final String categoryName;
-  final String route;
-
-  CategoryCard(this.categoryName, this.route);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      child: InkWell(
-        onTap: () {
-          Navigator.pushNamed(context, route);
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: Text(categoryName),
-          ),
-        ),
+      icon: Icon(icon, color: Colors.white),
+      label: Text(
+        label,
+        style: TextStyle(
+            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
