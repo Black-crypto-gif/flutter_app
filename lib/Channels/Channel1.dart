@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:audioplayers/audioplayers.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class Channel1Page extends StatefulWidget {
   @override
@@ -16,54 +12,6 @@ class _Channel1PageState extends State<Channel1Page> {
   int currentListeners = 0;
   String streamingUrl = '';
   String imageUrl = 'http://localhost/static/img/generic_song.jpg';
-  AudioPlayer audioPlayer = AudioPlayer();
-
-  Future<void> fetchData() async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://localhost/api/stations'));
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        if (data.isNotEmpty) {
-          final station = data.first;
-          setState(() {
-            currentSong = station['name'];
-            currentListeners = station['mounts'][0]['listeners']['current'];
-            streamingUrl = station['listen_url'];
-            imageUrl = 'http://localhost/static/img/generic_song.jpg';
-          });
-        }
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
-    audioPlayer.onPlayerStateChanged.listen((event) {
-      if (event == PlayerState.COMPLETED) {
-        setState(() {
-          isPlaying = false;
-        });
-      }
-    });
-  }
-
-  void _playPause() {
-    if (isPlaying) {
-      audioPlayer.pause();
-    } else {
-      audioPlayer.play(streamingUrl);
-    }
-    setState(() {
-      isPlaying = !isPlaying;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +25,35 @@ class _Channel1PageState extends State<Channel1Page> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 16),
-            CachedNetworkImage(
-              imageUrl: imageUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-              fit: BoxFit.cover,
-              height: 200, // Set the height based on your preference
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFcacaca), Color(0xFFf0f0f0)],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(-20, -20),
+                    blurRadius: 60,
+                    color: Color(0xFFbebebe),
+                  ),
+                  BoxShadow(
+                    offset: Offset(20, 20),
+                    blurRadius: 60,
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Icon(
+                  Icons.play_arrow,
+                  size: 64,
+                  color: Colors.blueGrey,
+                ),
+              ),
             ),
             SizedBox(height: 16),
             Text(
@@ -105,7 +76,7 @@ class _Channel1PageState extends State<Channel1Page> {
             ),
             SizedBox(height: 32),
             ElevatedButton(
-              onPressed: _playPause,
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 primary: Colors.blueGrey,
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -129,7 +100,7 @@ class _Channel1PageState extends State<Channel1Page> {
                 setState(() {
                   volume = value;
                 });
-                audioPlayer.setVolume(volume);
+                // Adjust the volume logic here
               },
               activeColor: Colors.blueGrey,
               inactiveColor: Colors.grey,

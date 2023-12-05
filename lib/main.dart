@@ -13,20 +13,24 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
-      routes: {
-        '/channel1': (context) => Channel1Page(),
-        '/channel2': (context) => Channel2Page(),
-        '/channel3': (context) => Channel3Page(),
-        '/channel4': (context) => Channel4Page(),
-        '/channel5': (context) => RadioPage(),
-        '/about': (context) => AboutPage(),
-      },
-      theme: ThemeData(
-        primaryColor:
-            Color(0xFFe0e0e0), // Set the background color for the entire app
-        fontFamily: 'Roboto',
+    return ThemeSwitcherWidget(
+      child: Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: MyHomePage(),
+            routes: {
+              '/channel1': (context) => Channel1Page(),
+              '/channel2': (context) => Channel2Page(),
+              '/channel3': (context) => Channel3Page(),
+              '/channel4': (context) => Channel4Page(),
+              '/channel5': (context) => RadioPage(),
+              '/about': (context) => AboutPage(),
+            },
+            theme: ThemeSwitcherWidget.of(context).isDarkMode
+                ? ThemeData.dark()
+                : ThemeData.light(),
+          );
+        },
       ),
     );
   }
@@ -38,6 +42,15 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('اذاعة توحيد'),
+        actions: [
+          // Theme switcher button
+          IconButton(
+            icon: Icon(Icons.lightbulb_outline),
+            onPressed: () {
+              ThemeSwitcherWidget.of(context).switchTheme();
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -47,8 +60,11 @@ class MyHomePage extends StatelessWidget {
 
             // App Title
             Text(
-              'Stream App',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              'اذاعة التوحيد',
+              style: TextStyle(
+                  fontSize: 42,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Roboto'),
             ),
             SizedBox(height: 10),
 
@@ -172,7 +188,7 @@ class ChannelButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30.0),
         ),
         // Box Shadow
-        elevation: 10,
+        elevation: 20,
         shadowColor: Colors.grey[500],
       ),
       child: Stack(
@@ -203,4 +219,49 @@ class ChannelButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class ThemeSwitcherWidget extends StatefulWidget {
+  final Widget child;
+
+  ThemeSwitcherWidget({required this.child});
+
+  @override
+  _ThemeSwitcherWidgetState createState() => _ThemeSwitcherWidgetState();
+
+  static _ThemeSwitcherWidgetState of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<_InheritedThemeSwitcherWidget>()!
+        .data;
+  }
+}
+
+class _ThemeSwitcherWidgetState extends State<ThemeSwitcherWidget> {
+  bool isDarkMode = false;
+
+  void switchTheme() {
+    setState(() {
+      isDarkMode = !isDarkMode;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _InheritedThemeSwitcherWidget(
+      data: this,
+      child: widget.child,
+    );
+  }
+}
+
+class _InheritedThemeSwitcherWidget extends InheritedWidget {
+  final _ThemeSwitcherWidgetState data;
+
+  _InheritedThemeSwitcherWidget({
+    required this.data,
+    required Widget child,
+  }) : super(child: child);
+
+  @override
+  bool updateShouldNotify(_InheritedThemeSwitcherWidget oldWidget) => true;
 }
