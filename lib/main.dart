@@ -196,7 +196,7 @@ class ChannelButton extends StatelessWidget {
             child: Icon(
               icon,
               color: Colors.grey[800],
-              size: 40,
+              size: 25,
             ),
           ),
         ],
