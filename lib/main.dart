@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
         '/about': (context) => AboutPage(),
       },
       theme: ThemeData(
-        primaryColor: Colors.blue,
+        primaryColor:
+            Color(0xFFe0e0e0), // Set the background color for the entire app
         fontFamily: 'Roboto',
       ),
     );
@@ -44,38 +45,54 @@ class MyHomePage extends StatelessWidget {
           children: [
             SizedBox(height: 20),
 
+            // App Title
+            Text(
+              'Stream App',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+
+            // Slogan
+            Text(
+              'Your Source for Diverse Music',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            SizedBox(height: 20),
+
+            // Radio Station Title
+            Text(
+              'اذاعة توحيد',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+
             // Featured Channels
             Text(
               'Featured Channels',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 20.0, // Adjust the spacing between columns
-              runSpacing: 20.0, // Adjust the spacing between rows
+            SizedBox(height: 20),
+            GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 20.0,
+              mainAxisSpacing: 20.0,
+              padding: EdgeInsets.all(5.0),
+              shrinkWrap: true,
               children: [
                 _buildPaddedChannelButton(
-                    'Channel 1', '/channel1', Icons.music_note),
+                    'Channel 1', '/channel1', Icons.radio),
                 _buildPaddedChannelButton(
-                    'Channel 2', '/channel2', Icons.music_note),
+                    'Channel 2', '/channel2', Icons.radio),
                 _buildPaddedChannelButton(
-                    'Channel 3', '/channel3', Icons.music_note),
+                    'Channel 3', '/channel3', Icons.radio),
                 _buildPaddedChannelButton(
-                    'Channel 4', '/channel4', Icons.music_note),
+                    'Channel 4', '/channel4', Icons.radio),
                 _buildPaddedChannelButton(
                     'Radio Page', '/channel5', Icons.radio),
+                _buildPaddedChannelButton('About App', '/about', Icons.info),
               ],
             ),
 
-            SizedBox(height: 20),
-
-            // App Description
-            Text(
-              'Discover the world of music with Stream App. Explore diverse channels and enjoy a personalized audio experience.',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
             SizedBox(height: 20),
           ],
         ),
@@ -129,7 +146,7 @@ class MyHomePage extends StatelessWidget {
 
   Widget _buildPaddedChannelButton(String label, String route, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.all(8.0), // Adjust the padding as needed
+      padding: const EdgeInsets.all(5.0), // Adjust the padding as needed
       child: ChannelButton(label, route, icon),
     );
   }
@@ -144,22 +161,45 @@ class ChannelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
+    return ElevatedButton(
       onPressed: () {
         Navigator.pushNamed(context, route);
       },
       style: ElevatedButton.styleFrom(
-        primary: Colors.black,
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        primary: Colors.grey[300], // Background color
+        padding: EdgeInsets.symmetric(vertical: 24, horizontal: 32),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(30.0),
         ),
+        // Box Shadow
+        elevation: 10,
+        shadowColor: Colors.grey[500],
       ),
-      icon: Icon(icon, color: Colors.white),
-      label: Text(
-        label,
-        style: TextStyle(
-            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Text
+          Positioned(
+            top: 20,
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.grey[800],
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          // Icon
+          Positioned(
+            bottom: 20,
+            child: Icon(
+              icon,
+              color: Colors.grey[800],
+              size: 40,
+            ),
+          ),
+        ],
       ),
     );
   }
